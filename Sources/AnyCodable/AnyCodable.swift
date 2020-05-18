@@ -64,7 +64,12 @@ extension AnyCodable: Codable {
         } else if let value = try? container.decode(Double.self) {
             switch value {
             case value.rounded():
-                self.value = Int(value)
+				// If we can store this in an Int then do so, otherwise use a double
+				if Double(Int.min) < value && value < Double(Int.max) {
+					self.value = Int(value)
+				} else {
+					self.value = value
+				}
             default:
                 self.value = value
             }
